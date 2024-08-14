@@ -1,0 +1,108 @@
+volumes:
+  postgres-data:
+    driver: local
+
+  redis-data:
+    driver: local
+
+  localstack-data:
+    driver: local
+
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--accesslog=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--ping=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=web"
+      - "--providers.file.filename=/etc/traefik/tls.yml"
+      - "--providers.file.watch=true"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
+      - "--entrypoints.https.http.tls.domains[0].main=localhost"
+      - "--log.level=DEBUG"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./cert/:/etc/traefik/cert/:ro
+      - ./config/traefik/tls.yml:/etc/traefik/tls.yml:ro
+    networks:
+      web:
+        aliases:
+          - tracking.localhost
+
+  postgres:
+    image: postgres:14.7-alpine
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=default_pgdb,default_pgtest
+      - POSTGRES_PASSWORD=pgpwd
+      - POSTGRES_USER=pguser
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./config/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      database:
+        aliases:
+          - postgres
+
+  redis:
+    image: redis:7.0-alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      database:
+        aliases:
+          - redis
+
+  adminer:
+    image: adminer:4-standalone
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer.rule=Host(`adminer.localhost`)"
+      - "traefik.http.routers.adminer.entrypoints=http,https"
+      - "traefik.http.services.adminer.loadbalancer.server.port=8080"
+    networks:
+      - web
+      - database
+
+  mail:
+    image: axllent/mailpit:v1.9
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mail.rule=Host(`mail.localhost`)"
+      - "traefik.http.routers.mail.entrypoints=http,https"
+      - "traefik.http.services.mail.loadbalancer.server.port=8025"
+    networks:
+      web:
+        aliases:
+          - mail
+
+  phpredisadmin:
+    image: erikdubbelboer/phpredisadmin:1.19
+    environment:
+      - REDIS_1_HOST=redis
+      - REDIS_1_NAME=local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpredisadmin.rule=Host(`phpredisadmin.localhost`)"
+      - "traefik.http.routers.phpredisadmin.entrypoints=http,https"
+      - "traefik.http.services.phpredisadmin.loadbalancer.server.port=80"
+    networks:
+      - web
+      - database
+
+networks:
+  web:
+    external: true
+
+  database:
+    external: true
