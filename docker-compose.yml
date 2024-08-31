@@ -36,6 +36,7 @@ services:
     networks:
       web:
         aliases:
+          - default.localhost
           - tracking.localhost
 
   postgres:
