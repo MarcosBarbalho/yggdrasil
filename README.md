@@ -1,12 +1,12 @@
-<img src=".github/img/ygginha.png" width="128px" height="128px" align="left"/>
+<img src=".github/img/yggdrasil.png" width="128px" height="128px" align="left"/>
 
-# Ygginha
+# Yggdrasil
 
 Infrastructure based on docker-compose to run services locally using Docker.
 
 ## Requirements
 
-To properly run Ygginha on your system, make sure you have the following installed:
+To properly run Yggdrasil on your system, make sure you have the following installed:
 
 - docker: https://www.docker.com/
 - docker-compose: https://docs.docker.com/compose/ (prefer installing the plugin version if not already installed)
@@ -14,7 +14,7 @@ To properly run Ygginha on your system, make sure you have the following install
 
 ## Steps
 
-With Ygginha cloned to your machine, follow the steps below from the project root to get everything running:
+With Yggdrasil cloned to your machine, follow the steps below from the project root to get everything running:
 
 1) Configure the networks on your system
     1) `docker network create web`
@@ -51,7 +51,7 @@ openssl req \
 -out ./cert/cer.crt \
 -days 3560 \
 -nodes \
--subj "/C=BR/ST=Minas Gerais/L=Betim/O=Ygginha LTDA./OU=Tech/CN=localhost" \
+-subj "/C=BR/ST=Minas Gerais/L=Betim/O=Yggdrasil LTDA./OU=Tech/CN=localhost" \
 -addext "subjectAltName=DNS:*.localhost"
 ```
 
