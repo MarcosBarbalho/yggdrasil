@@ -2,29 +2,30 @@
 
 # Ygginha
 
-Infra baseada em [docker-compose][1] para rodar localmente os serviços via Docker.
+Infrastructure based on docker-compose to run services locally using Docker.
 
-## Requisitos
+## Requirements
 
-Para o correto funcionamento da Ygginha em seu sistema, é necessário ter instalado os seguintes componentes:
+To properly run Ygginha on your system, make sure you have the following installed:
 
-- [docker][2]
-- [docker-compose][1] (instale preferencialmente o plugin, caso já não esteja instalado)
-- [openssl](https://www.openssl.org/) (somente para a geração de novos certificados auto-assinados)
+- docker: https://www.docker.com/
+- docker-compose: https://docs.docker.com/compose/ (prefer installing the plugin version if not already installed)
+- openssl: https://www.openssl.org/ (only required for generating new self-signed certificates)
 
-## Passos
+## Steps
 
-Com a Ygginha clonada em seu computador, siga os passos abaixo, na raiz do projeto, para tê-la funcionando.
+With Ygginha cloned to your machine, follow the steps below from the project root to get everything running:
 
-1) Configurar as networks no seu sistema
+1) Configure the networks on your system
     1) `docker network create web`
     2) `docker network create database`
-2) Executar o `docker compose up -d` para subir os serviços base
-3) Subir cada serviço que precisar
+2) Run `docker compose up -d` to start the base services
+3) Start any additional services as needed
 
-## Componentes
+## Components
 
-Neste projeto estão inclusos os seguintes componentes:
+This project includes the following components:
+
 - Traefik v2.10
 - Adminer v4
 - PostgreSQL v14.7
@@ -34,16 +35,16 @@ Neste projeto estão inclusos os seguintes componentes:
 
 ### Traefik
 
-O Traefik possui uma interface onde é possível visualizar todos backends e frontends configurados nele.
+Traefik provides a dashboard where you can visualize all configured backends and frontends.
 
-Essa interface é acessível através da URL [http://127.0.0.1:8080](http://127.0.0.1:8080)
+This interface is available at: http://127.0.0.1:8080
 
-#### Geração de certificado auto-assinado
+#### Self-signed certificate generation
 
-Caso seja necessário gerar um novo certificado, use o comando abaixo:
+If you need to generate a new certificate, use the command below:
 
 ```bash
-$ openssl req \
+openssl req \
 -x509 \
 -newkey rsa:2048 \
 -keyout ./cert/key.key \
@@ -54,11 +55,9 @@ $ openssl req \
 -addext "subjectAltName=DNS:*.localhost"
 ```
 
-## Leitura recomendada
+## Recommended Reading
 
-Para um melhor entendimento do que está acontecendo aqui, recomendo pesquisar sobre qualquer termo técnico que você desconheça, especialmente sobre [docker][2] e [docker-compose][1].
+For a better understanding of this setup, it is recommended to research any unfamiliar technical terms, especially related to:
 
-[1]: https://docs.docker.com/compose/
-[2]: https://www.docker.com/
-
-# ygginha
+- docker: https://www.docker.com/
+- docker-compose: https://docs.docker.com/compose/
